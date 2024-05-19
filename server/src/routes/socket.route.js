@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
-router.get("", (req, res) => {
-	console.log(req.io.id);
-	req.io.broadcast.emit("receieve_message", { msg: "from backedn" });
-	res.json("MESSAGE SENT");
-});
 
-router.post("", (req, res) => {
+router.post("/:id", (req, res) => {
 	const data = req.body;
-	req.io.broadcast.emit("receieve_message", { ...data });
+	const id = req.params.id;
+	console.log("SENDING TO ROOM :: ", id);
+	req.io.to(id).emit("receieve_message", { ...data });
 	res.json("MESSAGE SENT");
 });
 

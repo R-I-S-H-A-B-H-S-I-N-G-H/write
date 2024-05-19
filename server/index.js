@@ -44,16 +44,21 @@ app.use(
 
 //
 websocket.on("connection", (socket) => {
-	console.log(socket.id);
-
 	app.use(appendSocket(socket));
 	app.use("/io", socketRoute);
-});
 
-// handle 404 routes
-// app.use("*", (req, res, next) => {
-// 	res.status(404).json("THIS API PATH IS NOT DEFINED");
-// });
+	// socket.on("send_message", (roomId, data) => {
+	// 	console.log("SENDING TO ROOM :: ", roomId, data);
+	// 	if (roomId) socket.to(roomId).emit("receieve_message", { ...data });
+	// 	// else socket.broadcast.emit("receieve_message", { ...data });
+	// });
+
+	socket.on("join-room", (room) => {
+		console.log("ROOM JOINED :: ", room);
+		socket.join(room);
+	});
+	console.log(socket.id);
+});
 
 server.listen(PORT, () => {
 	console.log(`server running at ${PORT}`);

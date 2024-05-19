@@ -14,9 +14,10 @@ const socket = io.connect(config.BASE_URL);
 export default function App(params) {
 	const socketId = useRef();
 	const [delta, setDelta] = useState();
+	const roomidRef = useRef(socket.id);
 
 	useEffect(() => {
-		socket.on("connect", () => {
+		socket.on("connect", async () => {
 			console.log("Successfully connected!", socket.id);
 			socketId.current = socket.id;
 		});
@@ -28,12 +29,26 @@ export default function App(params) {
 		});
 	}, []);
 
+	function joinRoom(room) {
+		console.log("JOIN ROOM", room);
+		socket.emit("join-room", room);
+	}
+
 	async function sendMessage(changes) {
-		await axios.post(`${config.BASE_URL}/io`, { id: socketId.current, data: changes });
+		await axios.post(`${config.BASE_URL}/io/${roomidRef.current.value}`, { id: socketId.current, data: changes });
+		// socket.emit("send_message", roomidRef.current.value, { id: socketId.current, data: changes });
+	}
+
+	function roomIdChange() {
+		const val = roomidRef.current.value;
+		console.log(val);
+		joinRoom(val);
 	}
 
 	return (
 		<>
+			<input placeholder="enter docname" ref={roomidRef} />
+			<button onClick={roomIdChange}>Join Room</button>
 			<Editor delta={delta} onChange={sendMessage} />
 			{/* <Editor /> */}
 			{/* <Editor toolbarId="#toolbar" /> */}

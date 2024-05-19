@@ -4,8 +4,9 @@ const helmet = require("helmet");
 
 const app = express();
 const helloWorldRoute = require("./routes/helloWorld.route");
+const socketRoute = require("./routes/socket.route");
 
-app.use(cors());
+app.use(cors("*"));
 app.use(helmet());
 app.use(
 	express.json({
@@ -15,6 +16,7 @@ app.use(
 
 // Routes
 app.use("/hello", helloWorldRoute);
+app.use("/io", socketRoute);
 
 // handle 404 routes
 app.use("*", (req, res, next) => {

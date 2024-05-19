@@ -6,9 +6,10 @@ import SlateEditor from "./components/Editor/Slate/Slate";
 import SunEditorWrapper from "./components/Editor/SunEditor/SunEditorWrapper";
 import TipTap from "./components/Editor/TipTap/TipTap";
 import axios from "axios";
+import config from "../configs/config";
 
 const io = require("socket.io-client");
-const socket = io.connect("http://localhost:3000");
+const socket = io.connect(config.BASE_URL);
 
 export default function App(params) {
 	const socketId = useRef();
@@ -28,7 +29,7 @@ export default function App(params) {
 	}, []);
 
 	async function sendMessage(changes) {
-		await axios.post("http://localhost:3000/io", { id: socketId.current, data: changes });
+		await axios.post(`${config.BASE_URL}/io`, { id: socketId.current, data: changes });
 	}
 
 	return (
